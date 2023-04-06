@@ -20,12 +20,18 @@ if __name__ == '__main__':
     url_todo = f'https://jsonplaceholder.typicode.com/users/{employee_id}/todos'
     res_todo = requests.get(url_todo)
     res_todo_json = res_todo.json()
-    total_tasks = len(res_todo_json)
-    done_tasks = [task for task in res_todo_json if task['completed']]
+
+    total_tasks = 0
+    done_tasks = []
+    for task in res_todo_json:
+        if task['userId'] == employee_id:
+            total_tasks += 1
+            if task['completed']:
+                done_tasks.append(task)
 
     print(f'Employee {employee_name} is done with tasks'
           f'({len(done_tasks)}/{total_tasks}):')
-    
+
     for task in done_tasks:
         task_title = task.get('title')
         print(f'\t {task_title}')
