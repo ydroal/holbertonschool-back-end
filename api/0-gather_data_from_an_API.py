@@ -1,39 +1,33 @@
 #!/usr/bin/python3
-'''
-Module for a given employee ID, returns information
-about his/her todo list progress.
-'''
-import requests
-import sys
+"""Returns info about his/her TODO list progress by giving employee ID"""
 
-if __name__ == '__main__':
-    args = sys.argv
-    if args[1]:
-        employee_id = int(sys.argv[1])
+from requests import get
+from sys import argv
 
-    users_response = requests.get('https://jsonplaceholder.typicode.com/users')
-    todos_response = requests.get('https://jsonplaceholder.typicode.com/todos')
 
-    users_data = users_response.json()
-    todos_data = todos_response.json()
+if __name__ == "__main__":
+    response = get('https://jsonplaceholder.typicode.com/todos/')
+    data = response.json()
+    completed = 0
+    total = 0
+    tasks = []
+    response2 = get('https://jsonplaceholder.typicode.com/users/')
+    data2 = response2.json()
 
-    employee_name = None
-    for user in users_data:
-        if user['id'] == employee_id:
-            employee_name = user['name']
-            break
+    for i in data2:
+        if i.get('id') == int(argv[1]):
+            employee = i.get('name')
 
-    total_tasks = 0
-    done_tasks = []
-    for task in todos_data:
-        if task['userId'] == employee_id:
-            total_tasks += 1
-            if task['completed']:
-                done_tasks.append(task)
+    for i in data:
+        if i.get('userId') == int(argv[1]):
+            total += 1
 
-    print(f'Employee {employee_name} is done with tasks'
-          f'({len(done_tasks)}/{total_tasks}):')
+            if i.get('completed') is True:
+                completed += 1
+                tasks.append(i.get('title'))
 
-    for task in done_tasks:
-        task_title = task.get('title')
-        print(f'\t {task_title}')
+    print("Employee {} is done with tasks({}/{}):".format(employee,
+                                                          completed, total))
+
+    for i in tasks:
+        print("\t {}".format(i))
