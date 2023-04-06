@@ -12,16 +12,15 @@ if __name__ == '__main__':
     if args[1]:
         employee_id = int(sys.argv[1])
 
-    res = requests.get(
-        'https://jsonplaceholder.typicode.com/users',
-        params={'id': employee_id}
-        )
+    url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
+    res = requests.get(url)
     res_json = res.json()
-    employee_name = res_json[0].get('name')
+    employee_name = res_json.get('name')
 
-    res_todo = requests.get(
-        f'https://jsonplaceholder.typicode.com/users/{employee_id}/todos'
-        )
+    url_todo = ('https://jsonplaceholder.typicode.com/'
+                f'users/{employee_id}/todos')
+
+    res_todo = requests.get(url_todo)
     res_todo_json = res_todo.json()
     total_tasks = len(res_todo_json)
     done_tasks = [task for task in res_todo_json if task['completed']]
