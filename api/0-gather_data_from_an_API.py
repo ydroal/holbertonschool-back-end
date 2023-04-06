@@ -6,24 +6,26 @@ about his/her todo list progress.
 import requests
 import sys
 
-
 if __name__ == '__main__':
     args = sys.argv
     if args[1]:
         employee_id = int(sys.argv[1])
 
-    url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
-    res = requests.get(url)
-    res_json = res.json()
-    employee_name = res_json.get('name')
+    users_response = requests.get('https://jsonplaceholder.typicode.com/users')
+    todos_response = requests.get('https://jsonplaceholder.typicode.com/todos')
 
-    url_todo = f'https://jsonplaceholder.typicode.com/users/{employee_id}/todos'
-    res_todo = requests.get(url_todo)
-    res_todo_json = res_todo.json()
+    users_data = users_response.json()
+    todos_data = todos_response.json()
+
+    employee_name = None
+    for user in users_data:
+        if user['id'] == employee_id:
+            employee_name = user['name']
+            break
 
     total_tasks = 0
     done_tasks = []
-    for task in res_todo_json:
+    for task in todos_data:
         if task['userId'] == employee_id:
             total_tasks += 1
             if task['completed']:
