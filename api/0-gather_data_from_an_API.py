@@ -27,7 +27,7 @@ if __name__ == '__main__':
     done_tasks = [task for task in res_todo_json if task['completed']]
 
     print(f'Employee {employee_name} is done with tasks'
-          f'({len(done_tasks)}/{total_tasks})')
+          f'({len(done_tasks)}/{total_tasks}):')
 
     for task in done_tasks:
         task_title = task.get('title')
