@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 '''
 Module for a given employee ID, returns information
-about his/her todo list progress.
+about his/her todo list progress and exports data in CSV format.
 '''
 import requests
 import sys
-
+import csv
 
 if __name__ == '__main__':
     args = sys.argv
@@ -17,7 +17,7 @@ if __name__ == '__main__':
         params={'id': employee_id}
         )
     res_json = res.json()
-    employee_name = res_json[0].get('name')
+    employee_name = res_json[0].get('username')
 
     res_todo = requests.get(
         f'https://jsonplaceholder.typicode.com/users/{employee_id}/todos'
@@ -26,9 +26,10 @@ if __name__ == '__main__':
     total_tasks = len(res_todo_json)
     done_tasks = [task for task in res_todo_json if task['completed']]
 
-    print(f'Employee {employee_name} is done with tasks'
-          f'({len(done_tasks)}/{total_tasks}):')
-
-    for task in done_tasks:
-        task_title = task.get('title')
-        print(f'\t {task_title}')
+    # Export data to CSV
+    with open(f'{employee_id}.csv', mode='w', newline='') as csv_file:
+        writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
+        for task in res_todo_json:
+            writer.writerow(
+                [employee_id, employee_name, task['completed'], task['title']]
+                )
