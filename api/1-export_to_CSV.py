@@ -1,35 +1,31 @@
 #!/usr/bin/python3
-'''
-Module for a given employee ID, returns information
-about his/her todo list progress and exports data in CSV format.
-'''
-import requests
-import sys
+"""Python script to export data in the CSV format"""
+
+from requests import get
+from sys import argv
 import csv
 
-if __name__ == '__main__':
-    args = sys.argv
-    if args[1]:
-        employee_id = int(sys.argv[1])
+if __name__ == "__main__":
+    response = get('https://jsonplaceholder.typicode.com/todos/')
+    data = response.json()
 
-    res = requests.get(
-        'https://jsonplaceholder.typicode.com/users',
-        params={'id': employee_id}
-        )
-    res_json = res.json()
-    employee_name = res_json[0].get('username')
+    row = []
+    response2 = get('https://jsonplaceholder.typicode.com/users/')
+    data2 = response2.json()
 
-    res_todo = requests.get(
-        f'https://jsonplaceholder.typicode.com/users/{employee_id}/todos'
-        )
-    res_todo_json = res_todo.json()
-    total_tasks = len(res_todo_json)
-    done_tasks = [task for task in res_todo_json if task['completed']]
+    for i in data2:
+        if i['id'] == int(argv[1]):
+            employee = i['username']
 
-    # Export data to CSV
-    with open(f'{employee_id}.csv', mode='w', newline='') as csv_file:
-        writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
-        for task in res_todo_json:
-            writer.writerow(
-                [employee_id, employee_name, task['completed'], task['title']]
-                )
+    with open(argv[1] + '.csv', 'w', newline='') as file:
+        writ = csv.writer(file, quoting=csv.QUOTE_ALL)
+
+        for i in data:
+            row = []
+            if i['userId'] == int(argv[1]):
+                row.append(i['userId'])
+                row.append(employee)
+                row.append(i['completed'])
+                row.append(i['title'])
+
+                writ.writerow(row)
