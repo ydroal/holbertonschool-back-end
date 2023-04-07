@@ -23,7 +23,6 @@ if __name__ == '__main__':
     url_todo = ('https://jsonplaceholder.typicode.com/'
                 f'users/{employee_id}/todos')
 
-
     res_todo = requests.get(url_todo)
     res_todo_json = res_todo.json()
     total_tasks = len(res_todo_json)
