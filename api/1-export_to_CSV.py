@@ -32,5 +32,6 @@ if __name__ == '__main__':
         writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
         for task in res_todo_json:
             writer.writerow(
-                [employee_id, employee_name, str(task['completed']), task['title']]
+                [employee_id, employee_name,
+                 str(task['completed']), task['title']]
                 )
